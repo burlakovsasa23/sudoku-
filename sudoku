@@ -1,0 +1,372 @@
+from random import*
+from sys import*
+setrecursionlimit(10**6)
+class sudoku:
+    def __init__(self, table=None, ans=None):
+        if table == None:
+            self.mtrI=[['1', '2', '3', '4', '5', '6', '7', '8', '9'],
+                       
+                       ['4', '5', '6', '7', '8', '9', '1', '2', '3'],
+                       
+                       ['7', '8', '9', '1', '2', '3', '4', '5', '6'],
+                       
+                       ['2', '3', '1', '5', '6', '4', '8', '9', '7'],
+                       
+                       ['5', '6', '4', '8', '9', '7', '2', '3', '1'],
+                       
+                       ['8', '9', '7', '2', '3', '1', '5', '6', '4'],
+                       
+                       ['3', '1', '2', '6', '4', '5', '9', '7', '8'],
+                       
+                       ['6', '4', '5', '9', '7', '8', '3', '1', '2'],
+                       
+                       ['9', '7', '8', '3', '1', '2', '6', '4', '5']]
+            mtrI=self.mtrI
+            swaps=[[0, 1, 2], [0, 2, 1],
+                   [1, 0, 2], [1, 2, 0],
+                   [2, 0, 1], [2, 1, 0]]
+            for rw in range(3):
+                rand=randint(0, 5)
+                for col in range(9):
+                    Z=[mtrI[3*rw][col],
+                       mtrI[3*rw+1][col],
+                       mtrI[3*rw+2][col]]
+                    for p in range(3):
+                        mtrI[3*rw+p][col]=Z[swaps[rand][p]]#[col]
+            #self.print()
+            #print()
+            for rw in range(3):
+                rand=randint(0, 5)
+                #print(rand)
+                for col in range(9):
+                    Z=[mtrI[col][3*rw],
+                       mtrI[col][3*rw+1],
+                       mtrI[col][3*rw+2]]
+                    for p in range(3):
+                        mtrI[col][3*rw+p]=Z[swaps[rand][p]]#[col]
+            #self.print()
+            #print()
+            rand=randint(0, 5)
+            for rw in range(3):
+                for col in range(9):
+                    Z=[mtrI[rw][col],
+                       mtrI[rw+3][col],
+                       mtrI[rw+6][col]]
+                    for p in range(3):
+                        mtrI[rw+3*p][col]=Z[swaps[rand][p]]#[col]
+            #self.print()
+            #print()
+            rand=randint(0, 5)
+            for rw in range(3):
+                for col in range(9):
+                    Z=[mtrI[col][rw],
+                       mtrI[col][rw+3],
+                       mtrI[col][rw+6]]
+                    for p in range(3):
+                        mtrI[col][rw+p*3]=Z[swaps[rand][p]]#[col]
+            a=[1, 2, 3, 4, 5, 6, 7, 8, 9]
+            shuffle(a)
+            for i in range(9):
+                for j in range(9):
+                    mtrI[i][j]=a[int(mtrI[i][j]) - 1]
+            self.ans=[]
+            for i in mtrI:
+                #print(i)
+                self.ans.append([])
+                for j in i:
+                    self.ans[-1].append(j)
+            for i in range(9):
+                for j in range(9):
+                    rand=randint(1, 32)
+                    if rand<=10:
+                        mtrI[i][j]=' '
+            AK=[]
+            self.versions=[]
+            for i in mtrI:
+                #print(i)
+                AK.append([])
+                for j in i:
+                    AK[-1].append(j)
+            self.versions.append(AK)
+            #print(self.ans)
+        else:
+            self.mtrI=table
+            self.versions=[]
+            AK=[]
+            self.versions=[]
+            for i in self.mtrI:
+                #print(i)
+                AK.append([])
+                for j in i:
+                    AK[-1].append(j)
+            self.ans = ans
+            self.versions.append(AK)
+    def print(self):
+        for i in range(9):
+            if i%3==0:
+                print("+-----+-----+-----+")
+            for j in range(9):
+                if j%3==0:
+                    print("|", end='')
+                if j%3==2:
+                    print(self.mtrI[i][j], end='')
+                    continue
+                print(self.mtrI[i][j], end=' ')
+            print("|")
+        print("+-----+-----+-----+")
+    def __del__(self):
+        pass
+    def change(self):
+        self.print()
+        N=input()
+        #self.print()
+        if N=='esc':
+            #print(len(self.versions))
+            if len(self.versions)>1:
+                #for i in A.versions:
+                #    for j in i:
+                #        print(*j)
+                #    print()
+                self.versions.pop()
+                self.mtrI=[]
+                for i in self.versions[-1]:
+                    self.mtrI.append([])
+                    for j in i:
+                        self.mtrI[-1].append(j)
+                    #print(*i)
+                #for i in self.versions:
+                #    for j in i:
+                #        print(*j)
+                #    print()
+                #for i in self.versions[-1]:
+                #    print(*j)
+                    #print()
+            #continue
+        elif N=='show_ans':
+            for i in range(9):
+                if i%3==0:
+                    print("+-----+-----+-----+")
+                for j in range(9):
+                    if j%3==0:
+                        print("|", end='')
+                    if j%3==2:
+                        print(self.ans[i][j], end='')
+                        continue
+                    print(self.ans[i][j], end=' ')
+                print("|")
+            print("+-----+-----+-----+")
+            #continue
+        elif N=='exit':
+            #del self
+            return
+        elif N=='save':
+            AAA=input("print file name")
+            #try:
+            F=open( AAA+".pkl", mode="x")
+            #except:
+            #    print("this file is exist")
+            #    self.change()
+            #    return 0
+            F.write(str(self.mtrI)+":"+str(self.ans))
+            F.close()
+            print("game sucsesfully saved")
+            #continue
+        else:
+            try:
+                r=[int(i) for i in N.split()]
+            except:
+                print("Invalit step")
+                self.change()
+                return
+            try:
+                r[0]
+                r[1]
+                r[2]
+            except:
+                print("Invalit step")
+                self.change()
+                return
+            if r[0]<1 or r[0]>9:
+                print("Invalid step")
+                self.change()
+                return
+            if r[1]<1 or r[1]>9:
+                print("Invalid step")
+                self.change()
+                return
+            if r[2]<1 or r[2]>9:
+                print("Invalid step")
+                self.change()
+                return
+            if self.mtrI[r[0] - 1][r[1] - 1] != ' ':
+                print("Invalit step")
+                self.change()
+                return
+            se=set()
+            for i in range(9):
+                se.add(self.mtrI[i][r[1] - 1])
+                se.add(self.mtrI[r[0] - 1][i])
+            X_=(r[0] - 1)//3*3
+            Y_=(r[1] - 1)//3*3
+            for i in range(3):
+                for j in range(3):
+                    se.add(self.mtrI[X_+i][Y_+j])
+            #print(se, r[2], r[2] in se)
+            if r[2] in se:
+                print("Invalid step")
+                self.change()
+                return
+            self.mtrI[r[0] - 1][r[1] - 1]=r[2]
+            AK=[]
+            for i in self.mtrI:
+                #print(i)
+                AK.append([])
+                for j in i:
+                    AK[-1].append(j)
+            if sum([self.mtrI[i][j] == ' ' for i in range(9) for j in range(9)])==0:
+                print("you won the game!")
+                return
+            self.versions.append(AK)
+        self.change()
+    def ESC(self):
+        self.versions.pop()
+        self.mtrI=[]
+        for i in self.versions[-1]:
+            self.mtrI.append([])
+            for j in i:
+                self.mtrI[-1].append(j)
+    def STEP(self, x, y, n):
+        self.mtrI[x][y]=n
+        AK=[]
+        for i in self.mtrI:
+            #print(i)
+            AK.append([])
+            for j in i:
+                AK[-1].append(j)
+        #if sum([self.mtrI[i][j] == ' ' for i in range(9) for j in range(9)])==0:
+            #print("you won the game!")
+            #return
+        self.versions.append(AK)
+    def AImode(self, obz=False):
+        
+        #for i in self.mtrI:
+        #    print(*i)
+        #print(sum([self.mtrI[i][j] == ' ' for i in range(9) for j in range(9)]))
+        if sum([self.mtrI[i][j] == ' ' for i in range(9) for j in range(9)])==0:
+            return 1
+        L____=[[0 for i in range(9)]for j in range(9)]
+        for x in range(9):
+            for y in range(9):
+                #print(self.mtrI[x][y] == ' ', end=' ')
+                if not(self.mtrI[x][y]==' '):
+                    L____[x][y]={-i-1 for i in range(12)}
+                    continue
+                se=set()
+                for i in range(9):
+                    se.add(str(self.mtrI[x][i]))
+                    se.add(str(self.mtrI[i][y]))
+                X_=(x)//3*3
+                Y_=(y)//3*3
+                for i in range(3):
+                    for j in range(3):
+                        se.add(str(self.mtrI[X_+i][Y_+j]))
+                if x==0 and y==4:
+                    print(se)
+                L____[x][y]={'1', '2', '3', '4', '5', '6', '7', '8', '9'}-se
+        #print()
+        #for i in L____:
+        #    for j in i:
+        #        print(*j)
+        #    print()
+        hk=100
+        minx=-1
+        miny=-1
+        for x in range(9):
+            for y in range(9):
+                if(len(L____[x][y])<hk):
+                    hk = len(L____[x][y])
+                    minx = x
+                    miny = y
+                if(len(L____[x][y]) == 0):
+                    if obz:
+                        print("sudoku is impossible", x, y, L____[x][y])
+                        return 0
+                    else:
+                        return 0
+                    return
+                if(len(L____[x][y]) == 1 and int(GEIS(L____[x][y]))>0):
+                    self.STEP(x, y, GEIS(L____[x][y]))
+                    if self.AImode()==1:
+                        return 1
+                    self.ESC()
+        #print(hk, minx, miny)
+        if hk>1:
+            for i in L____[minx][miny]:
+                if i!=-1:
+                    self.STEP(minx, miny, i)
+                    if self.AImode()==1:
+                        return 1
+                    self.ESC()
+        return 0
+def GEIS(S):
+    for i in S:
+        return i
+A=sudoku()
+while True:
+    print("type new_game to new game")
+    print("type open to open file")
+    print("type exit to exit")
+    print("type help to help")
+    print("type AImode to AImode")
+    S = input()
+    if S=="new_game":
+        del A
+        A=sudoku()
+        #A.print()
+        A.change()
+    if S=="exit":
+        break
+    if S=="open":
+        name = input("file name:")
+        file = open(name+".pkl", mode = 'r')
+        #names=file.read().split(':')
+        #names[0]=eval(names[0])
+        names=[eval(i) for i in file.read().split(':')]
+        del A
+        A=sudoku(names[0], names[1])
+        A.change()
+    if S=="help":
+        print("type x y z and FIELD[x][y] will be z (numeration of rows and colomns begins from 1)")
+        print("type save to save game")
+        print("type exit to exit")
+        print("type show_ans to show answer")
+        print("type esc to redo")
+        print()
+    if S=="AImode":
+        FLD=[]
+        for i in range(9):
+            if i%3==0:
+                input()
+            ANS=[]
+            HH=input()
+            for i in [HH[j] for j in range(1, 19, 2)]:
+                ANS.append(i)
+            FLD.append(ANS)
+        input()
+        del A
+        A=sudoku(FLD, FLD)
+        A.AImode(True)
+        for ver in A.versions:
+            for i in range(9):
+                if i%3==0:
+                    print("+-----+-----+-----+")
+                for j in range(9):
+                    if j%3==0:
+                        print("|", end='')
+                    if j%3==2:
+                        print(ver[i][j], end='')
+                        continue
+                    print(ver[i][j], end=' ')
+                print("|")
+            print("+-----+-----+-----+")
+            print()
